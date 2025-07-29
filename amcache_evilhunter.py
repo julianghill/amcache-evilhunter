@@ -25,8 +25,9 @@ from rich.console import Console
 from rich.table import Table
 from rich.live import Live
 
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 VT_API_URL = "https://www.virustotal.com/api/v3/files/{hash}"
+OPENTIP_API_URL = "https://opentip.kaspersky.com/api/v1/search/hash?request={hash}"
 
 # Core fields to persist for SHA-1–bearing records
 KEEP_FIELDS = {
@@ -189,23 +190,6 @@ def normalize_data(data):
                     vals[k] = nv
 
 
-def prune_record(vals, vt_enabled):
-    """Select only the KEEP_FIELDS (plus VT fields) from vals."""
-    if not vals.get("SHA-1"):
-        return {}
-    out = {}
-    fields = set(KEEP_FIELDS)
-    if vt_enabled:
-        fields.update({"VT_Detections", "VT_TotalEngines", "VT_Ratio"})
-    for field in fields:
-        if field == "IsOsComponent":
-            continue
-        if field in vals:
-            out[field] = vals[field]
-    out["IsOsComponent"] = bool(vals.get("IsOsComponent"))
-    return out
-
-
 @lru_cache(maxsize=1024)
 def lookup_vt(hash_value, api_key):
     """Fetch VT stats for a hash; return (detections, total, ratio)."""
@@ -228,29 +212,73 @@ def lookup_vt(hash_value, api_key):
         return None, None, ""
 
 
-def write_json(path, data, vt_enabled, api_key):
+@lru_cache(maxsize=1024)
+def lookup_opentip(hash_value, api_key):
+    """Fetch OpenTIP FileStatus for a hash; return status or 'N/A'."""
+    try:
+        resp = requests.get(
+            OPENTIP_API_URL.format(hash=hash_value),
+            headers={"x-api-key": api_key},
+            timeout=15
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        status = data.get("FileGeneralInfo", {}).get("FileStatus")
+        return status or "N/A"
+    except HTTPError as e:
+        if e.response and e.response.status_code == 404:
+            return "N/A"
+        return ""
+    except (ValueError, KeyError):
+        return ""
+
+
+def prune_record(vals, vt_enabled=False, opentip_enabled=False):
+    """Select only the KEEP_FIELDS (plus VT/OpenTIP fields) from vals."""
+    if not vals.get("SHA-1"):
+        return {}
+    out = {}
+    fields = set(KEEP_FIELDS)
+    if vt_enabled:
+        fields.update({"VT_Detections", "VT_TotalEngines", "VT_Ratio"})
+    if opentip_enabled:
+        fields.add("OpenTIP_FileStatus")
+    for field in fields:
+        if field == "IsOsComponent":
+            continue
+        if field in vals:
+            out[field] = vals[field]
+    out["IsOsComponent"] = bool(vals.get("IsOsComponent"))
+    return out
+
+
+def write_json(path, data, vt_enabled, opentip_enabled, vt_api_key, ot_api_key):
     """Write filtered records to JSON file."""
     prompt_overwrite(path)
 
     with path.open("w", encoding="utf-8") as f:
         for cat, recs in data.items():
             for rec_name, vals in recs.items():
-                kept = prune_record(vals, vt_enabled)
+                kept = prune_record(vals, vt_enabled, opentip_enabled)
                 if not kept:
                     continue
 
                 if vt_enabled:
-                    det, tot, ratio = lookup_vt(kept["SHA-1"], api_key)
+                    det, tot, ratio = lookup_vt(kept["SHA-1"], vt_api_key)
                     kept["VT_Detections"] = det
                     kept["VT_TotalEngines"] = tot
                     kept["VT_Ratio"] = ratio
+
+                if opentip_enabled:
+                    status = lookup_opentip(kept["SHA-1"], ot_api_key)
+                    kept["OpenTIP_FileStatus"] = status
 
                 kept["Category"] = cat
                 kept["RecordName"] = rec_name
                 f.write(json.dumps(kept, ensure_ascii=False) + "\n")
 
 
-def write_csv(path, data, vt_enabled, api_key):
+def write_csv(path, data, vt_enabled, opentip_enabled, vt_api_key, ot_api_key):
     """Write filtered records to CSV file."""
     prompt_overwrite(path)
 
@@ -259,6 +287,8 @@ def write_csv(path, data, vt_enabled, api_key):
     headers += sorted(other) + ["FilePath"]
     if vt_enabled:
         headers += ["VT_Detections", "VT_TotalEngines", "VT_Ratio"]
+    if opentip_enabled:
+        headers += ["OpenTIP_FileStatus"]
 
     with path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=headers)
@@ -266,27 +296,27 @@ def write_csv(path, data, vt_enabled, api_key):
 
         for cat, recs in data.items():
             for rec_name, vals in recs.items():
-                kept = prune_record(vals, vt_enabled)
+                kept = prune_record(vals, vt_enabled, opentip_enabled)
                 if not kept:
                     continue
 
-                row = {
-                    "Category": cat,
-                    "RecordName": rec_name,
-                    **kept
-                }
+                row = {"Category": cat, "RecordName": rec_name, **kept}
 
                 if vt_enabled:
-                    det, tot, ratio = lookup_vt(kept["SHA-1"], api_key)
+                    det, tot, ratio = lookup_vt(kept["SHA-1"], vt_api_key)
                     row["VT_Detections"] = det
                     row["VT_TotalEngines"] = tot
                     row["VT_Ratio"] = ratio
 
+                if opentip_enabled:
+                    status = lookup_opentip(kept["SHA-1"], ot_api_key)
+                    row["OpenTIP_FileStatus"] = status
+
                 writer.writerow(row)
 
 
-def print_table(data, vt_enabled, api_key=None, only_detections=False):
-    """Live-render a table of records; optionally filter VT detections."""
+def print_table(data, vt_enabled, opentip_enabled, vt_api_key=None, ot_api_key=None, only_detections=False):
+    """Live-render a table of records; optionally filter detections."""
     any_printed = False
     rows_to_print = []
 
@@ -298,6 +328,8 @@ def print_table(data, vt_enabled, api_key=None, only_detections=False):
         tbl.add_column("OS?", justify="center")
         if vt_enabled:
             tbl.add_column("VT", justify="right")
+        elif opentip_enabled:
+            tbl.add_column("OT", justify="center")
         return tbl
 
     table = make_table()
@@ -309,24 +341,32 @@ def print_table(data, vt_enabled, api_key=None, only_detections=False):
                     continue
                 name = vals.get("Name", "")
                 record_date_str = vals.get("RecordDate", "")
-                try:
-                    datetime.fromisoformat(record_date_str)
-                except ValueError:
-                    pass
-
                 os_flag = "Yes" if vals.get("IsOsComponent") else "No"
-                vt_cell = ""
+
                 style = None
-                if vt_enabled and api_key:
-                    det, _, vt_cell = lookup_vt(sha, api_key)
+                vt_cell = ""
+                ot_cell = ""
+
+                if vt_enabled:
+                    det, _, vt_cell = lookup_vt(sha, vt_api_key)
                     if det and det > 0:
                         style = "bold red"
                     if only_detections and (det is None or det == 0):
                         continue
 
+                elif opentip_enabled:
+                    status = lookup_opentip(sha, ot_api_key)
+                    ot_cell = status
+                    if status.lower() == "malware":
+                        style = "bold red"
+                    if only_detections and status.lower() != "malware":
+                        continue
+
                 row = [sha, name, record_date_str, os_flag]
                 if vt_enabled:
                     row.append(vt_cell)
+                elif opentip_enabled:
+                    row.append(ot_cell)
 
                 rows_to_print.append((record_date_str, row, style))
                 rows_to_print.sort(key=lambda t: t[0])
@@ -339,10 +379,10 @@ def print_table(data, vt_enabled, api_key=None, only_detections=False):
 
     if not any_printed:
         msg = "No entries found."
-        if vt_enabled and only_detections:
-            msg = "No entries with VT detections found."
+        if (vt_enabled or opentip_enabled) and only_detections:
+            msg = "No entries with detections found."
         console.print(f"[bold red]{msg}[/]")
-        sys.exit(1 if vt_enabled and only_detections else 0)
+        sys.exit(1 if (vt_enabled or opentip_enabled) and only_detections else 0)
 
 
 def main():
@@ -352,6 +392,13 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"AmCache-EvilHunter {VERSION} by Cristian Souza (cristianmsbr@gmail.com)"
     )
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-v", "--vt", action="store_true",
+                       help="Enable VirusTotal lookups (requires VT_API_KEY)")
+    group.add_argument("--opentip", action="store_true",
+                       help="Enable Kaspersky OpenTIP lookups (requires OPENTIP_API_KEY)")
+
     parser.add_argument('-V', '--version', action='version',
                         version=f"AmCache-EvilHunter {VERSION} by Cristian Souza")
     parser.add_argument("-i", "--input", type=Path, required=True, help="Path to Amcache.hve")
@@ -363,21 +410,26 @@ def main():
     parser.add_argument("--missing-publisher", action="store_true",
                         help="Filter only records with missing Publisher")
     parser.add_argument("--exclude-os", action="store_true", help="Only include non-OS-component files")
-    parser.add_argument("-v", "--vt", action="store_true",
-                        help="Enable VirusTotal lookups (requires VT_API_KEY)")
     parser.add_argument("--only-detections", action="store_true",
-                        help="Show/save only files with ≥1 VT detection")
+                        help="Show/save only files with ≥1 detection")
     parser.add_argument("--json", type=Path, help="Path to write JSON Lines")
     parser.add_argument("--csv", type=Path, help="Path to write CSV")
     args = parser.parse_args()
 
-    api_key = None
+    vt_api_key = None
+    ot_api_key = None
     if args.vt:
-        api_key = os.getenv("VT_API_KEY")
-        if not api_key:
+        vt_api_key = os.getenv("VT_API_KEY")
+        if not vt_api_key:
             console.print("[bold red]Error:[/] VT_API_KEY environment variable not set", style="red")
             sys.exit(1)
+    if args.opentip:
+        ot_api_key = os.getenv("OPENTIP_API_KEY")
+        if not ot_api_key:
+            console.print("[bold red]Error:[/] OPENTIP_API_KEY environment variable not set", style="red")
+            sys.exit(1)
 
+    # parse date filters
     start_dt = None
     end_dt = None
     if args.start:
@@ -396,6 +448,7 @@ def main():
         console.print("[bold red]Error:[/] --start must be on or before --end", style="red")
         sys.exit(1)
 
+    # parse search terms
     search_terms = None
     if args.search:
         search_terms = [t.strip().lower() for t in args.search.split(",") if t.strip()]
@@ -433,12 +486,19 @@ def main():
                     filtered[cat] = keep
             data = filtered
 
-        print_table(data, vt_enabled=args.vt, api_key=api_key, only_detections=args.only_detections)
+        print_table(
+            data,
+            vt_enabled=args.vt,
+            opentip_enabled=args.opentip,
+            vt_api_key=vt_api_key,
+            ot_api_key=ot_api_key,
+            only_detections=args.only_detections
+        )
 
         if args.json:
-            write_json(args.json, data, vt_enabled=args.vt, api_key=api_key)
+            write_json(args.json, data, args.vt, args.opentip, vt_api_key, ot_api_key)
         if args.csv:
-            write_csv(args.csv, data, vt_enabled=args.vt, api_key=api_key)
+            write_csv(args.csv, data, args.vt, args.opentip, vt_api_key, ot_api_key)
 
     except FileNotFoundError as e:
         console.print(f"[bold red]Error:[/] {e}", style="red")
