@@ -52,6 +52,7 @@ python3 amcache_evilhunter.py -i path/to/Amcache.hve [OPTIONS]
 | `--search TERMS`     | Comma-separated, case-insensitive search terms                             |
 | `--find-suspicious`  | Filter only records matching known suspicious patterns                     |
 | `--missing-publisher`| Filter only records with missing Publisher                                 |
+| `--exclude-os`       | Only include non-OS-component files                                        |
 | `--opentip`          | Enable Kaspersky OpenTIP lookups (requires `OPENTIP_API_KEY` env variable) |
 | `-v`, `--vt`         | Enable VirusTotal lookups (requires `VT_API_KEY` env variable)             |
 | `--only-detections`  | Show/save only files with ≥1 VT detection                                  |
