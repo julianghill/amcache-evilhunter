@@ -1,6 +1,6 @@
 # AmCache-EvilHunter
 
-`AmCache-EvilHunter` is a command-line tool to parse and analyze Windows `Amcache.hve` registry hives, identify evidence of execution, suspicious executables, and integrate VirusTotal lookups for enhanced threat intelligence.
+`AmCache-EvilHunter` is a command-line tool to parse and analyze Windows `Amcache.hve` registry hives, identify evidence of execution, suspicious executables, and integrate VirusTotal/OpenTIP lookups for enhanced threat intelligence.
 
 https://github.com/user-attachments/assets/e23fb99b-48ad-4260-b372-2f15e5320c74
 
