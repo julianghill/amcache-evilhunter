@@ -90,6 +90,7 @@ python3 amcache_evilhunter.py -i path/to/Amcache.hve [OPTIONS]
 ## Environment variables
 
 * `VT_API_KEY`: Your VirusTotal API key used for file hash lookups.
+* `OPENTIP_API_KEY`: Your OpenTIP API key used for file hash lookups.
 
 ## Building executables
 
