@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Configuration
-SCRIPT="amcache_evilhunter.py"
+SCRIPT="amcache-evilhunter.py"
 NAME="${SCRIPT%.*}"
 BUILD_DIR="build"
 LINUX_DIR="$BUILD_DIR/linux"

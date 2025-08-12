@@ -1,0 +1,119 @@
+.TH AMCACHE-EVILHUNTER 1 "2025" "Version 0.0.3" "User Commands"
+.SH NAME
+amcache_evilhunter \- parse and analyze Windows Amcache.hve registry hives with threat intelligence lookups
+.SH SYNOPSIS
+.B amcache_evilhunter
+\-i
+.I PATH
+[OPTIONS]
+.SH DESCRIPTION
+.B AmCache-EvilHunter
+is a command-line tool to parse and analyze offline Windows
+.BR Amcache.hve
+registry hives. It identifies evidence of program execution, flags suspicious executables, and integrates with VirusTotal or Kaspersky OpenTIP for enhanced threat intelligence.
+
+.SH OPTIONS
+.TP
+.BR -i ", " --input " " \fIPATH\fR
+Path to the
+.B Amcache.hve
+file. (Required)
+.TP
+.B --start \fIYYYY-MM-DD\fR
+Only include records on or after this date.
+.TP
+.B --end \fIYYYY-MM-DD\fR
+Only include records on or before this date.
+.TP
+.B --search \fITERMS\fR
+Comma-separated, case-insensitive search terms.
+.TP
+.B --find-suspicious
+Filter only records matching known suspicious executable name patterns.
+.TP
+.B --missing-publisher
+Filter only records with a missing Publisher field.
+.TP
+.B --exclude-os
+Only include non-OS-component files.
+.TP
+.BR -v ", " --vt
+Enable VirusTotal lookups (requires
+.BR VT_API_KEY
+environment variable).
+.TP
+.B --opentip
+Enable Kaspersky OpenTIP lookups (requires
+.BR OPENTIP_API_KEY
+environment variable).
+.TP
+.B --only-detections
+Show/save only files with one or more detections from VT or OpenTIP.
+.TP
+.B --json \fIPATH\fR
+Write JSON Lines output to
+.IR PATH .
+.TP
+.B --csv \fIPATH\fR
+Write CSV output to
+.IR PATH .
+.TP
+.BR -V ", " --version
+Display version information and exit.
+
+.SH ENVIRONMENT VARIABLES
+.TP
+.BR VT_API_KEY
+VirusTotal API key used for hash lookups (required if
+.B --vt
+is specified).
+.TP
+.BR OPENTIP_API_KEY
+Kaspersky OpenTIP API key used for hash lookups (required if
+.B --opentip
+is specified).
+
+.SH EXAMPLES
+.TP
+Parse and display all records:
+.EX
+amcache_evilhunter -i Amcache.hve
+.EE
+.TP
+Filter by date range and search for "notepad":
+.EX
+amcache_evilhunter -i Amcache.hve --start 2021-01-01 --end 2021-12-31 --search notepad
+.EE
+.TP
+Identify suspicious executables and query VirusTotal:
+.EX
+amcache_evilhunter -i Amcache.hve --find-suspicious -v
+.EE
+.TP
+Export VirusTotal detections to JSON:
+.EX
+export VT_API_KEY=YOUR_API_KEY
+amcache_evilhunter -i Amcache.hve -v --only-detections --json detections.json
+.EE
+
+.SH REQUIREMENTS
+.PP
+Python 3.7 or higher, with the following packages:
+.B requests,
+.B python-registry,
+.B rich.
+Install dependencies with:
+.EX
+pip3 install -r requirements.txt
+.EE
+
+.SH AUTHOR
+Written by Cristian Souza <cristianmsbr@gmail.com>
+
+.SH LICENSE
+MIT License.
+
+.SH HOMEPAGE
+.UR https://github.com/cristianzsh/amcache-evilhunter
+https://github.com/cristianzsh/amcache-evilhunter
+.UE
