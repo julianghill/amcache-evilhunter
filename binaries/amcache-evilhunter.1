@@ -1,8 +1,8 @@
 .TH AMCACHE-EVILHUNTER 1 "2025" "Version 0.0.3" "User Commands"
 .SH NAME
-amcache_evilhunter \- parse and analyze Windows Amcache.hve registry hives with threat intelligence lookups
+amcache-evilhunter \- parse and analyze Windows Amcache.hve registry hives with threat intelligence lookups
 .SH SYNOPSIS
-.B amcache_evilhunter
+.B amcache-evilhunter
 \-i
 .I PATH
 [OPTIONS]
@@ -77,23 +77,23 @@ is specified).
 .TP
 Parse and display all records:
 .EX
-amcache_evilhunter -i Amcache.hve
+amcache-evilhunter -i Amcache.hve
 .EE
 .TP
 Filter by date range and search for "notepad":
 .EX
-amcache_evilhunter -i Amcache.hve --start 2021-01-01 --end 2021-12-31 --search notepad
+amcache-evilhunter -i Amcache.hve --start 2021-01-01 --end 2021-12-31 --search notepad
 .EE
 .TP
 Identify suspicious executables and query VirusTotal:
 .EX
-amcache_evilhunter -i Amcache.hve --find-suspicious -v
+amcache-evilhunter -i Amcache.hve --find-suspicious -v
 .EE
 .TP
 Export VirusTotal detections to JSON:
 .EX
 export VT_API_KEY=YOUR_API_KEY
-amcache_evilhunter -i Amcache.hve -v --only-detections --json detections.json
+amcache-evilhunter -i Amcache.hve -v --only-detections --json detections.json
 .EE
 
 .SH REQUIREMENTS
