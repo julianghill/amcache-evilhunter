@@ -425,7 +425,7 @@ def write_csv(path, data, vt_enabled, opentip_enabled, vt_api_key, ot_api_key, o
     """Write filtered records to CSV file."""
     prompt_overwrite(path)
 
-    headers = [h for h in build_output_headers(vt_enabled, opentip_enabled) if h != "Category"]
+    headers = build_output_headers(vt_enabled, opentip_enabled)
 
     total = count_records(data)
     progress = Progress(
@@ -439,7 +439,7 @@ def write_csv(path, data, vt_enabled, opentip_enabled, vt_api_key, ot_api_key, o
     )
 
     with path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=headers)
+        writer = csv.DictWriter(f, fieldnames=headers, extrasaction="ignore")
         writer.writeheader()
 
         with progress:
