@@ -12,8 +12,10 @@ https://github.com/user-attachments/assets/e23fb99b-48ad-4260-b372-2f15e5320c74
 * Identify known suspicious executables (`--find-suspicious`).
 * Identify executables without a publisher (`--missing-publisher`).
 * Kaspersky OpenTIP integration for hash lookups (`--opentip`, `--only-detections`).
-* VirusTotal integration for hash lookups (`--vt`, `--only-detections`).
-* Export results to JSON (`--json`) or CSV (`--csv`).
+* VirusTotal integration for hash lookups (`--vt`, `--only-detections`) with key validation.
+* Export results to JSON Lines (`--json`), CSV (`--csv`), or HTML (`--html`).
+* Interactive HTML report with search, sort, missing-publisher filtering, and VT links for detections.
+* Export progress bars for long-running writes.
 
 ## Requirements
 
@@ -42,6 +44,10 @@ pip3 install -r requirements.txt
 python3 amcache_evilhunter.py -i path/to/Amcache.hve [OPTIONS]
 ```
 
+When writing output files (`--json`, `--csv`, `--html`), the console table is suppressed by default; use `--show-table` to render it.
+Exports display a progress bar while lookups are running.
+VT/OpenTIP lookups automatically normalize padded SHA-1 values; use `--trim-sha1` if you want trimmed hashes in output.
+
 ### Options
 
 | Flag                 | Description                                                                |
@@ -54,10 +60,13 @@ python3 amcache_evilhunter.py -i path/to/Amcache.hve [OPTIONS]
 | `--missing-publisher`| Filter only records with missing Publisher                                 |
 | `--exclude-os`       | Only include non-OS-component files                                        |
 | `--opentip`          | Enable Kaspersky OpenTIP lookups (requires `OPENTIP_API_KEY` env variable) |
-| `-v`, `--vt`         | Enable VirusTotal lookups (requires `VT_API_KEY` env variable)             |
+| `-v`, `--vt`         | Enable VirusTotal lookups (requires `VT_API_KEY` env variable; validates key first) |
 | `--only-detections`  | Show/save only files with ≥1 VT detection                                  |
-| `--json PATH`        | Path to write full JSON output                                             |
+| `--json PATH`        | Path to write JSON Lines output                                            |
 | `--csv PATH`         | Path to write full CSV output                                              |
+| `--html PATH`        | Path to write HTML report (includes search/filter/sort UI and VT links)    |
+| `--show-table`       | Render console table even when writing output files                        |
+| `--trim-sha1`        | Trim leading zeros from SHA-1 values (legacy behavior)                     |
 | `-V`, `--version`    | Show version information                                                   |
 
 ## Examples
@@ -86,6 +95,14 @@ python3 amcache_evilhunter.py -i path/to/Amcache.hve [OPTIONS]
   export VT_API_KEY=YOUR_API_KEY
   python3 amcache_evilhunter.py -i Amcache.hve -v --only-detections --json detections.json
   ```
+
+* **Generate an interactive HTML report**:
+
+  ```bash
+  python3 amcache_evilhunter.py -i Amcache.hve --html report.html
+  ```
+
+  Open `report.html` in a browser and use the built-in search, sort, and missing-publisher filter.
 
 ## Environment variables
 

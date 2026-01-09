@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Amcache Evil Hunter Report</title>
+<style>
+:root {
+  --bg: #f5f1e7;
+  --card: #ffffff;
+  --text: #1f2328;
+  --muted: #4b5563;
+  --accent: #1d4ed8;
+  --danger: #b42318;
+  --border: #d0d7de;
+}
+body {
+  margin: 0;
+  padding: 32px 24px 48px;
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #fbf8f2 0%, #f0e7d8 100%);
+}
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  letter-spacing: 0.5px;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  overflow: auto;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: center;
+  margin: 18px 0 16px;
+}
+.controls label {
+  font-size: 13px;
+  color: var(--muted);
+}
+.controls input[type="text"],
+.controls select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  min-width: 180px;
+  background: #fff;
+}
+.controls .count {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--muted);
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 1200px;
+  font-size: 13px;
+}
+thead th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  color: var(--muted);
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ececec;
+  vertical-align: top;
+  word-break: break-word;
+}
+tbody tr:nth-child(even) {
+  background: #fcfbf8;
+}
+tbody tr.hit {
+  background: #fff1f1;
+}
+tbody tr.hit td:first-child {
+  border-left: 4px solid var(--danger);
+}
+</style>
+</head>
+<body>
+<h1>Amcache Evil Hunter Report</h1>
+<div class="meta">
+<span>Records: 9</span>
+<span>VT: on</span>
+<span>OpenTIP: off</span>
+<span>Only detections: no</span>
+<span>Generated: 2026-01-09 16:30:27Z</span>
+</div>
+<div class="controls">
+<label>Search
+<input id="searchInput" type="text" placeholder="Name, path, hash, publisher">
+</label>
+<label>
+<input id="missingPublisher" type="checkbox">
+ Missing publisher only
+</label>
+<label>Sort by
+<select id="sortSelect">
+<option value="recorddate-asc">RecordDate (oldest)</option>
+<option value="recorddate-desc">RecordDate (newest)</option>
+<option value="size-desc">Size (largest)</option>
+<option value="size-asc">Size (smallest)</option>
+<option value="name-asc">Name (A-Z)</option>
+<option value="name-desc">Name (Z-A)</option>
+</select>
+</label>
+<span class="count" id="rowCount"></span>
+</div>
+<div class="card">
+<table>
+<thead><tr>
+<th>RecordName</th>
+<th>SHA-1</th>
+<th>Name</th>
+<th>OriginalFileName</th>
+<th>FilePath</th>
+<th>LowerCaseLongPath</th>
+<th>ProductName</th>
+<th>Publisher</th>
+<th>ProductVersion</th>
+<th>BinFileVersion</th>
+<th>BinProductVersion</th>
+<th>BinaryType</th>
+<th>Size</th>
+<th>Language</th>
+<th>IsOsComponent</th>
+<th>RecordDate</th>
+<th>LinkDate</th>
+<th>InstallDate</th>
+<th>MsiInstallDate</th>
+<th>MsiPackageCode</th>
+<th>MsiProductCode</th>
+<th>ProgramId</th>
+<th>ProgramInstanceId</th>
+<th>RootDirPath</th>
+<th>Source</th>
+<th>UninstallString</th>
+<th>RegistryKeyPath</th>
+<th>(default)</th>
+<th>Version</th>
+<th>Usn</th>
+<th>HiddenArp</th>
+<th>VT_Detections</th>
+<th>VT_TotalEngines</th>
+<th>VT_Ratio</th>
+</tr></thead>
+<tbody>
+<tr class="" data-index="0" data-size="510976" data-name="facefoduninstaller.exe" data-recorddate="2024-03-12T07:03:38.419100" data-publisher="" data-search="facefoduninstaller.exe c:\windows\system32\winbioplugins\facefoduninstaller.exe c:\windows\system32\winbioplugins\facefoduninstaller.exe 00001a939e56833bebe2410115c2590367e99e2228ff facefoduninstall|6cde65186a9641de">
+<td>facefoduninstall|6cde65186a9641de</td>
+<td>00001a939e56833bebe2410115c2590367e99e2228ff</td>
+<td>FaceFodUninstaller.exe</td>
+<td></td>
+<td>c:\windows\system32\winbioplugins\facefoduninstaller.exe</td>
+<td>c:\windows\system32\winbioplugins\facefoduninstaller.exe</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>pe64_amd64</td>
+<td>510976</td>
+<td>0</td>
+<td>Yes</td>
+<td>2024-03-12T07:03:38.419100</td>
+<td>07/05/2075 06:07:55</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0000f519feec486de87ed73cb92d3cac802400000000</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0</td>
+<td></td>
+<td>0</td>
+<td>77</td>
+<td>0/77</td>
+</tr>
+<tr class="" data-index="1" data-size="18944" data-name="microsoft.microsoftsolitairecollection.exe" data-recorddate="2024-03-13T10:24:22.745248" data-publisher="" data-search="microsoft.microsoftsolitairecollection.exe c:\program files\windowsapps\microsoft.microsoftsolitairecollection_4.4.8204.0_x64__8wekyb3d8bbwe\microsoft.microsoftsolitairecollection.exe c:\program files\windowsapps\microsoft.microsoftsolitairecollection_4.4.8204.0_x64__8wekyb3d8bbwe\microsoft.microsoftsolitairecollection.exe 00002e6fef6be06e552194c33c537748deba12e3c07c dummyappforunmanagedentrypoint.exe microsoft.micros|5e22e2adb9b2dbec">
+<td>microsoft.micros|5e22e2adb9b2dbec</td>
+<td>00002e6fef6be06e552194c33c537748deba12e3c07c</td>
+<td>Microsoft.MicrosoftSolitaireCollection.exe</td>
+<td>dummyappforunmanagedentrypoint.exe</td>
+<td>c:\program files\windowsapps\microsoft.microsoftsolitairecollection_4.4.8204.0_x64__8wekyb3d8bbwe\microsoft.microsoftsolitairecollection.exe</td>
+<td>c:\program files\windowsapps\microsoft.microsoftsolitairecollection_4.4.8204.0_x64__8wekyb3d8bbwe\microsoft.microsoftsolitairecollection.exe</td>
+<td></td>
+<td></td>
+<td>0.0.0.0</td>
+<td>0.0.0.0</td>
+<td>0.0.0.0</td>
+<td>pe64_amd64</td>
+<td>18944</td>
+<td>0</td>
+<td>No</td>
+<td>2024-03-13T10:24:22.745248</td>
+<td>08/20/2019 23:19:39</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0000b39bde35c4aedb500c62d2add20ccc4f00000904</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0.0.0.0</td>
+<td>1613408</td>
+<td></td>
+<td>0</td>
+<td>77</td>
+<td>0/77</td>
+</tr>
+<tr class="" data-index="2" data-size="16202240" data-name="solitaire.exe" data-recorddate="2024-03-13T10:24:22.745248" data-publisher="" data-search="solitaire.exe c:\program files\windowsapps\microsoft.microsoftsolitairecollection_4.4.8204.0_x64__8wekyb3d8bbwe\solitaire.exe c:\program files\windowsapps\microsoft.microsoftsolitairecollection_4.4.8204.0_x64__8wekyb3d8bbwe\solitaire.exe 00005e46aa97ec6744f0f8006a08cc39704871ff4004 solitaire.exe|c7d98466ab3e70b">
+<td>solitaire.exe|c7d98466ab3e70b</td>
+<td>00005e46aa97ec6744f0f8006a08cc39704871ff4004</td>
+<td>Solitaire.exe</td>
+<td></td>
+<td>c:\program files\windowsapps\microsoft.microsoftsolitairecollection_4.4.8204.0_x64__8wekyb3d8bbwe\solitaire.exe</td>
+<td>c:\program files\windowsapps\microsoft.microsoftsolitairecollection_4.4.8204.0_x64__8wekyb3d8bbwe\solitaire.exe</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>pe64_amd64</td>
+<td>16202240</td>
+<td>0</td>
+<td>No</td>
+<td>2024-03-13T10:24:22.745248</td>
+<td>08/20/2019 23:18:02</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0000b39bde35c4aedb500c62d2add20ccc4f00000904</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>1614552</td>
+<td></td>
+<td>0</td>
+<td>77</td>
+<td>0/77</td>
+</tr>
+<tr class="" data-index="3" data-size="18432" data-name="microsoft.wallet.exe" data-recorddate="2024-03-13T10:24:24.010760" data-publisher="" data-search="microsoft.wallet.exe c:\program files\windowsapps\microsoft.wallet_2.4.18324.0_x64__8wekyb3d8bbwe\microsoft.wallet.exe c:\program files\windowsapps\microsoft.wallet_2.4.18324.0_x64__8wekyb3d8bbwe\microsoft.wallet.exe 00008010f7c746a7ba4864785f798f46ec05caae7ece dummyappforunmanagedentrypoint.exe microsoft.wallet|14e32c16e28ad04a">
+<td>microsoft.wallet|14e32c16e28ad04a</td>
+<td>00008010f7c746a7ba4864785f798f46ec05caae7ece</td>
+<td>Microsoft.Wallet.exe</td>
+<td>dummyappforunmanagedentrypoint.exe</td>
+<td>c:\program files\windowsapps\microsoft.wallet_2.4.18324.0_x64__8wekyb3d8bbwe\microsoft.wallet.exe</td>
+<td>c:\program files\windowsapps\microsoft.wallet_2.4.18324.0_x64__8wekyb3d8bbwe\microsoft.wallet.exe</td>
+<td></td>
+<td></td>
+<td>0.0.0.0</td>
+<td>0.0.0.0</td>
+<td>0.0.0.0</td>
+<td>pe64_amd64</td>
+<td>18432</td>
+<td>0</td>
+<td>No</td>
+<td>2024-03-13T10:24:24.010760</td>
+<td>11/20/2018 23:00:37</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>00006d6d2c8a2a2ddd15b3d746f810b2969e00000904</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0.0.0.0</td>
+<td>2393288</td>
+<td></td>
+<td>0</td>
+<td>77</td>
+<td>0/77</td>
+</tr>
+<tr class="hit" data-index="4" data-size="6966528" data-name="aws.exe" data-recorddate="2024-03-13T10:37:25.033147" data-publisher="" data-search="aws.exe c:\program files\amazon\awscliv2\aws.exe c:\program files\amazon\awscliv2\aws.exe 00004e64cfe2d893707e78d812b1b31985aa3e0cfb95 aws.exe|286cc7cd8508293e">
+<td>aws.exe|286cc7cd8508293e</td>
+<td>00004e64cfe2d893707e78d812b1b31985aa3e0cfb95</td>
+<td>aws.exe</td>
+<td></td>
+<td>c:\program files\amazon\awscliv2\aws.exe</td>
+<td>c:\program files\amazon\awscliv2\aws.exe</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>pe64_amd64</td>
+<td>6966528</td>
+<td>0</td>
+<td>No</td>
+<td>2024-03-13T10:37:25.033147</td>
+<td>02/23/2024 18:21:47</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>000055db7a59399ca504fab2ad7aae9c7a5400000904</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>101992280</td>
+<td></td>
+<td>1</td>
+<td>77</td>
+<td><a href="https://www.virustotal.com/gui/file/4e64cfe2d893707e78d812b1b31985aa3e0cfb95" target="_blank" rel="noreferrer">1/77</a></td>
+</tr>
+<tr class="hit" data-index="5" data-size="6966784" data-name="aws_completer.exe" data-recorddate="2024-03-13T10:37:31.127143" data-publisher="" data-search="aws_completer.exe c:\program files\amazon\awscliv2\aws_completer.exe c:\program files\amazon\awscliv2\aws_completer.exe 000033f08d06df4919749c8b31b722cf716563825b41 aws_completer.ex|7ab0c03bea8d8469">
+<td>aws_completer.ex|7ab0c03bea8d8469</td>
+<td>000033f08d06df4919749c8b31b722cf716563825b41</td>
+<td>aws_completer.exe</td>
+<td></td>
+<td>c:\program files\amazon\awscliv2\aws_completer.exe</td>
+<td>c:\program files\amazon\awscliv2\aws_completer.exe</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>pe64_amd64</td>
+<td>6966784</td>
+<td>0</td>
+<td>No</td>
+<td>2024-03-13T10:37:31.127143</td>
+<td>02/23/2024 18:22:30</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>000055db7a59399ca504fab2ad7aae9c7a5400000904</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>100938264</td>
+<td></td>
+<td>2</td>
+<td>76</td>
+<td><a href="https://www.virustotal.com/gui/file/33f08d06df4919749c8b31b722cf716563825b41" target="_blank" rel="noreferrer">2/76</a></td>
+</tr>
+<tr class="" data-index="6" data-size="183464" data-name="comreg.exe" data-recorddate="2024-03-13T10:37:43.783162" data-publisher="" data-search="comreg.exe c:\program files\common files\vmware\drivers\vss\comreg.exe c:\program files\common files\vmware\drivers\vss\comreg.exe 00004ab1726215e92af6d7d8da3b7865806604a19f50 comreg.exe|5e94604d72556d23">
+<td>comreg.exe|5e94604d72556d23</td>
+<td>00004ab1726215e92af6d7d8da3b7865806604a19f50</td>
+<td>comreg.exe</td>
+<td></td>
+<td>c:\program files\common files\vmware\drivers\vss\comreg.exe</td>
+<td>c:\program files\common files\vmware\drivers\vss\comreg.exe</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>pe64_amd64</td>
+<td>183464</td>
+<td>0</td>
+<td>No</td>
+<td>2024-03-13T10:37:43.783162</td>
+<td>08/31/2021 09:42:53</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>00008df65373d08834a306511b4278f7901f00000904</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>26586104</td>
+<td></td>
+<td>0</td>
+<td>77</td>
+<td>0/77</td>
+</tr>
+<tr class="" data-index="7" data-size="25768" data-name="ospprearm.exe" data-recorddate="2024-03-13T10:38:50.580013" data-publisher="" data-search="ospprearm.exe c:\program files\microsoft office\office16\ospprearm.exe c:\program files\microsoft office\office16\ospprearm.exe 00008c40f259cf737a55c0e82923295184844d0e7864 ospprearm.exe|a1d69ba702646028">
+<td>ospprearm.exe|a1d69ba702646028</td>
+<td>00008c40f259cf737a55c0e82923295184844d0e7864</td>
+<td>OSPPREARM.EXE</td>
+<td></td>
+<td>c:\program files\microsoft office\office16\ospprearm.exe</td>
+<td>c:\program files\microsoft office\office16\ospprearm.exe</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>pe64_amd64</td>
+<td>25768</td>
+<td>0</td>
+<td>No</td>
+<td>2024-03-13T10:38:50.580013</td>
+<td>07/30/2015 12:37:11</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>00001c9b0ec752c6fc0d32bdab3f8bd9b38f00000904</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>93727248</td>
+<td></td>
+<td>0</td>
+<td>77</td>
+<td>0/77</td>
+</tr>
+<tr class="hit" data-index="8" data-size="40960" data-name="superstar_membercard.tiff.exe" data-recorddate="2024-03-13T10:47:54.004172" data-publisher="" data-search="superstar_membercard.tiff.exe c:\users\ash.williams\downloads\superstar_membercard.tiff.exe c:\users\ash.williams\downloads\superstar_membercard.tiff.exe 00006236f6f30e1cd180d3f9bd1d48ea4cccdfc2a806 superstar_membercard.tiff.exe superstar_member|cb7787b940e01174">
+<td>superstar_member|cb7787b940e01174</td>
+<td>00006236f6f30e1cd180d3f9bd1d48ea4cccdfc2a806</td>
+<td>Superstar_MemberCard.tiff.exe</td>
+<td>superstar_membercard.tiff.exe</td>
+<td>c:\users\ash.williams\downloads\superstar_membercard.tiff.exe</td>
+<td>c:\users\ash.williams\downloads\superstar_membercard.tiff.exe</td>
+<td></td>
+<td></td>
+<td>0.0.0.0</td>
+<td>0.0.0.0</td>
+<td>0.0.0.0</td>
+<td>pe32_clr_il</td>
+<td>40960</td>
+<td>0</td>
+<td>No</td>
+<td>2024-03-13T10:47:54.004172</td>
+<td>03/13/2024 10:38:06</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0006407900c9ebb6ffa6a80844ac289ce35a00000000</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>0.0.0.0</td>
+<td>130679416</td>
+<td></td>
+<td>50</td>
+<td>77</td>
+<td><a href="https://www.virustotal.com/gui/file/6236f6f30e1cd180d3f9bd1d48ea4cccdfc2a806" target="_blank" rel="noreferrer">50/77</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<script>
+const rows = Array.from(document.querySelectorAll('tbody tr'));
+const tbody = document.querySelector('tbody');
+const searchInput = document.getElementById('searchInput');
+const missingPublisher = document.getElementById('missingPublisher');
+const sortSelect = document.getElementById('sortSelect');
+const rowCount = document.getElementById('rowCount');
+const totalRows = rows.length;
+function compareRows(a, b, mode) {
+  if (mode === 'size-desc' || mode === 'size-asc') {
+    const av = parseInt(a.dataset.size || '0', 10);
+    const bv = parseInt(b.dataset.size || '0', 10);
+    return mode === 'size-desc' ? bv - av : av - bv;
+  }
+  if (mode === 'name-desc' || mode === 'name-asc') {
+    const av = a.dataset.name || '';
+    const bv = b.dataset.name || '';
+    return mode === 'name-desc' ? bv.localeCompare(av) : av.localeCompare(bv);
+  }
+  const av = Date.parse(a.dataset.recorddate || '') || 0;
+  const bv = Date.parse(b.dataset.recorddate || '') || 0;
+  return mode === 'recorddate-desc' ? bv - av : av - bv;
+}
+function applyFilters() {
+  const query = (searchInput.value || '').trim().toLowerCase();
+  const missingOnly = missingPublisher.checked;
+  const mode = sortSelect.value || 'recorddate-asc';
+  const sorted = rows.slice().sort((a, b) => compareRows(a, b, mode));
+  let visible = 0;
+  sorted.forEach((row) => {
+    const publisher = row.dataset.publisher || '';
+    const search = row.dataset.search || '';
+    const matchesMissing = !missingOnly || publisher === '';
+    const matchesQuery = !query || search.includes(query);
+    if (matchesMissing && matchesQuery) {
+      row.style.display = '';
+      visible += 1;
+    } else {
+      row.style.display = 'none';
+    }
+    tbody.appendChild(row);
+  });
+  rowCount.textContent = `${visible} / ${totalRows} shown`;
+}
+searchInput.addEventListener('input', applyFilters);
+missingPublisher.addEventListener('change', applyFilters);
+sortSelect.addEventListener('change', applyFilters);
+applyFilters();
+</script>
+</body>
+</html>
