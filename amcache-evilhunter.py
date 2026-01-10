@@ -14,7 +14,7 @@ import os
 import html
 from pathlib import Path
 from functools import lru_cache
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 from requests.exceptions import HTTPError
@@ -535,7 +535,7 @@ def write_html(path, data, vt_enabled, opentip_enabled, vt_api_key, ot_api_key, 
             return "Yes" if value else "No"
         return str(value)
 
-    generated = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%SZ")
+    generated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%SZ")
     meta = [
         f"Records: {len(rows)}",
         f"VT: {'on' if vt_enabled else 'off'}",
