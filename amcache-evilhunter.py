@@ -27,7 +27,7 @@ from rich.table import Table
 from rich.live import Live
 from rich.progress import Progress, BarColumn, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 VT_API_URL = "https://www.virustotal.com/api/v3/files/{hash}"
 OPENTIP_API_URL = "https://opentip.kaspersky.com/api/v1/search/hash?request={hash}"
 VT_TEST_HASH = "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f"
